@@ -33,13 +33,17 @@ const RegisterScreen = ({ navigation }) => {
       .then((response) => response.json())
       .then((data) => {
         //Successful response from the API Call
-        // console.log(data);
+        console.log(data);
         setMyDepartments(data.departments);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
+  // useEffect(() => {
+  //   setIsSubmitting(isLoading);
+  // }, [isLoading]);
 
   //route to home on successful registration
   const navigateToHome = () => {
@@ -66,7 +70,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={[globalStyles.normalText]}>Getting Started</Text>
       </View>
       <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {isSubmitting ? <ActivityIndicator size={30} color="#ffffff" /> : null}
+        {isLoading ? <ActivityIndicator size={30} color="#ffffff" /> : null}
       </View>
       <Controller
         control={control}
@@ -187,7 +191,7 @@ const RegisterScreen = ({ navigation }) => {
       </View>
     </View>
   );
-};
+};;
 
 const Styles = StyleSheet.create({
   container: {

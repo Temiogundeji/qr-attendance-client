@@ -1,11 +1,11 @@
 import { Alert } from 'react-native';
 import { userAPI } from '../../shared/api';
-import { setLoginSuccess, setLoginRequest, setLoginError } from './actionCreators';
+import { setLoginError, setRegisterRequest, setLoginSuccess } from './actionCreators';
 import { storeUserData } from '../../utils/storage';
 
 export const register = (loginInput, callback = () => {}) => {
   return (dispatch) => {
-    dispatch(setLoginRequest());
+    dispatch(setRegisterRequest());
     return fetch(userAPI.USER_REGISTER_ENDPOINT, {
       method: 'POST',
       headers: {
