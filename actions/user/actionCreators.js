@@ -19,3 +19,10 @@ export const setLoginError = (error) => {
     payload: error,
   };
 };
+
+
+export const setRegisterRequest = () => {
+   return {
+     type:userConstants.REGISTER_REQUEST,
+   };
+}
