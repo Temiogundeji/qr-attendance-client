@@ -7,29 +7,30 @@ import { Button, Text } from '@ui-kitten/components';
 const GettingStartedScreen = ({ navigation }) => {
 
     return (
-        <View style={[Styles.container, globalStyles.background]}>
-            <View style={Styles.header}>
-                <Image style={Styles.gettingStartedImage} source={images.getStarted} />
-                <Text style={[globalStyles.normalText]}>The Federal Polytechnic Ilaro attendance System</Text>
-            </View>
-            <View style={Styles.Buttons}>
-                <Button 
-                    onPress={() => navigation.navigate('RegisterScreen')}
-                    appearance="filled"
-                    style={Styles.button}
-
-                     >
-                    <Text style={Styles.registerText}>Register</Text>
-                </Button>
-                <Button
-                    style={Styles.button}
-                    onPress={() => navigation.navigate('LoginScreen')}
-                    appearance="outline"
-                   >
-                    <Text style={[globalStyles.secondaryColor, globalStyles.fontFamily]}>Login</Text>
-                </Button>
-            </View>
+      <View style={[Styles.container, globalStyles.background]}>
+        <View style={Styles.header}>
+          <Image style={Styles.gettingStartedImage} source={images.getStarted} />
+          <Text style={[globalStyles.normalText]}>
+            The Federal Polytechnic Ilaro attendance System
+          </Text>
         </View>
+        <View style={Styles.Buttons}>
+          <Button
+            onPress={() => navigation.navigate('RegisterScreen')}
+            appearance="filled"
+            style={Styles.button}
+          >
+            <Text style={Styles.registerText}>Register</Text>
+          </Button>
+          <Button
+            style={[Styles.button, globalStyles.background]}
+            onPress={() => navigation.navigate('LoginScreen')}
+            appearance="outline"
+          >
+            <Text style={[globalStyles.secondaryColor, globalStyles.fontFamily]}>Login</Text>
+          </Button>
+        </View>
+      </View>
     );
 }
 

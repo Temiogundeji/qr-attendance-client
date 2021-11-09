@@ -10,7 +10,7 @@ export const userAPI = {
 
 export const attendanceAPI = {
   CREATE_ATTENDANCE: `${ROOT}/api/${VERSION}/attendances`,
-  GET_ALL_MY_ATTENDANCES: (studentId) => `${ROOT}/api/${VERSION}/attendances/student/${studentId}`,
+  GET_ALL_MY_ATTENDANCES: (studentId) => `${ROOT}/api/${VERSION}/student/attendances/${studentId}`,
 };
 
 export const departmentAPI = {

@@ -5,7 +5,7 @@ import { Button, Text, Input } from '@ui-kitten/components';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { EMAIL_VALIDATION_REGEXP } from '../utils/storage';
-import { login } from '../actions/user/login';
+import { login } from '../actions/users/login';
 import { CommonActions } from '@react-navigation/native';
 // import TextField from '../components/TextField';
 //Todo: Add Icon to text fields
@@ -18,6 +18,7 @@ const LoginScreen = ({ navigation }) => {
   } = useForm();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.login.isLoading);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigateToHome = () => {
     navigation.dispatch(
       CommonActions.reset({
@@ -27,13 +28,20 @@ const LoginScreen = ({ navigation }) => {
     );
   };
 
-  const onSubmit = (data) => dispatch(login(data, navigateToHome));
+  const onSubmit = (data) => {
+    setIsSubmitting(true);
+    dispatch(login(data, navigateToHome));
+    setIsSubmitting(false);
+  };
 
   return (
     <View style={[Styles.container, globalStyles.background]}>
       <View style={Styles.header}>
         <Text style={[globalStyles.headingText]}>Hi FPIite!</Text>
         <Text style={[globalStyles.normalText]}>Welcome Back</Text>
+      </View>
+      <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {isLoading ? <ActivityIndicator size={30} color="#ffffff" /> : null}
       </View>
       <Controller
         control={control}

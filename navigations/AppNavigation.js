@@ -59,7 +59,7 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Analytics',
-            headerTintColor: '#1473e6',
+            headerTintColor: '#18615B',
             headerTitleStyle: {
               // fontWeight: "bold",
               fontFamily: 'arlon-medium',
@@ -77,7 +77,7 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Attendances',
-            headerTintColor: '#1473e6',
+            headerTintColor: '#18615B',
             headerTitleStyle: {
               // fontWeight: "bold",
               fontFamily: 'arlon-medium',
@@ -90,7 +90,7 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'History',
-            headerTintColor: '#1473e6',
+            headerTintColor: '#18615B',
             headerTitleStyle: {
               // fontWeight: "bold",
               fontFamily: 'arlon-medium',
@@ -103,9 +103,9 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Profile',
-            headerTintColor: '#006400',
+            headerTintColor: '#18615B',
             headerTitleStyle: {
-              fontWeight: 'bold',
+              fontFamily: 'arlon-medium',
             },
           }}
         ></Stack.Screen>

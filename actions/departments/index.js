@@ -1,2 +1,2 @@
-export * from './department';
+export * from './departments';
 export * from './departmentCreator';

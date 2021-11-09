@@ -1,50 +1,70 @@
-import { getUserData } from '../../utils/storage';
+import { Alert } from 'react-native';
+import { attendanceAPI } from '../../shared/api';
+import { storeUserData } from '../../utils/storage';
 import {
+  createAttendanceFailed,
+  createAttendanceRequest,
+  createAttendanceSuccess,
   setAllAttendances,
-  setAttandanceSuccess,
   setAttendanceError,
   setAttendanceRequest,
 } from './attendanceCreator';
 
 //Get all student's attendance by his id
-export const getMyAttendances = () => {};
 
-//Create new attendances for student to indicate his presence
-export const createAttendance = (payload = {}) => {
-  let classId = payload.classId;
-  let token = '';
-  getUserData('user')
-    .then((record) => {
-      payload.studentId = record.data.id;
-      token = record.token;
-    })
-    .catch((err) => console.log(err));
+export const getMyAttendances = (id) => {
   return (dispatch) => {
-    dispatch(setFastRequest());
-    return fetch(fastAPI.FAST_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(payload),
-    })
+    dispatch(setAttendanceRequest());
+    fetch(attendanceAPI.GET_ALL_MY_ATTENDANCES(id))
       .then((response) => response.json())
       .then((json) => {
-        const { status, message } = json;
-        //    console.log(json);
+        console.log(json);
+        const { status, attendances } = json;
         if (status === 'success') {
-          dispatch(saveFastDay(new Date()));
-          return dispatch(createFast(fast));
+          console.log(attendances);
+          dispatch(setAllAttendances(attendances));
         }
       })
-      .catch((err) => {
-        dispatch(setFastError(err));
-        console.log(err);
+      .catch((e) => {
+        alert('Error', 'Some error occured, please retry');
+        dispatch(setAttendanceError(e.message));
+        alert(e.message);
+        console.log(e.message);
       });
   };
 };
 
-//Generate analytics from the attendance
-export const generateAttendanceAnalytics = () => {};
+export const markAttendance = (payload = {}) => {
+  const { lecturerId, studentId, classId } = payload;
+  return (dispatch) => {
+    dispatch(createAttendanceRequest());
+    return fetch(attendanceAPI.CREATE_ATTENDANCE, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lecturerId: lecturerId,
+        studentId,
+        classId: classId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        const { status, attendance } = json;
+        if (status === 'success') {
+          dispatch(createAttendanceSuccess(attendance));
+          storeUserData('attendanceData', attendance);
+          console.log(attendance);
+          Alert.alert('Success', 'You have successfully marked the attendance for today!');
+        }
+      })
+      .catch((err) => {
+        Alert.alert(err);
+        dispatch(createAttendanceFailed(err));
+        console.log(err);
+      });
+  };
+};

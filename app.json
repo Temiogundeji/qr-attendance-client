@@ -4,9 +4,9 @@
     "slug": "qr-att-client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/polytendance.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splashy.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.temiogundeji.qrattclient"
     },
     "web": {
       "favicon": "./assets/favicon.png"

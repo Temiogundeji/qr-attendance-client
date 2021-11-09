@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { globalStyles } from '../shared/global';
 import { Button, Text, Input, Select, SelectItem, IndexPath } from '@ui-kitten/components';
-
+import { CommonActions } from '@react-navigation/routers';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { EMAIL_VALIDATION_REGEXP } from '../utils/storage';
-import { fetchAllDepartments } from '../actions/department';
-import { register } from '../actions/user';
-import SearchableDropdown from 'react-native-searchable-dropdown';
+import { Picker } from '@react-native-picker/picker';
+import { register } from '../actions/users';
 import { departmentAPI } from '../shared/api';
 
 // import TextField from '../components/TextField';
@@ -23,36 +22,11 @@ const RegisterScreen = ({ navigation }) => {
   } = useForm();
 
   const dispatch = useDispatch();
-  // const [isFetchingDepartments, setIsFetchingDepartments] = useState(false);
   const [myDepartments, setMyDepartments] = useState({});
-  const [selectedItem, setSelectedItem] = useState('');
-
-  // const successCallback = (data) => {
-  //   setDepartments(data);
-  // };
-
-  // const errorCallback = (error) => {
-  //   setIsFetchingDepartments(false);
-  //   setResponseMessage(error);
-  // };
-
-  // const emptyCallback = (error) => {
-  //   setIsFetchingDepartments(false);
-  // };
-  // const callback = {
-  //   success: successCallback,
-  //   error: errorCallback,
-  //   empty: emptyCallback,
-  // };
-
-  // const fetchDepartmentsFromServer = (callback) => {
-  //   setIsFetchingDepartments(true);
-  //   fetchAllDepartments(callback);
-  // };
-
-  // useEffect(() => {
-  //   fetchDepartmentsFromServer(callback);
-  // }, []);
+  const [selectedDepartment, setSelectedDepartment] = useState();
+  const [selectedLevel, setSelectedLevel] = useState();
+  const isLoading = useSelector((state) => state.register.isLoading);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetch(departmentAPI.GET_ALL_DEPARTMENTS)
@@ -67,7 +41,6 @@ const RegisterScreen = ({ navigation }) => {
       });
   }, []);
 
-  console.log(myDepartments);
   //route to home on successful registration
   const navigateToHome = () => {
     navigation.dispatch(
@@ -78,13 +51,22 @@ const RegisterScreen = ({ navigation }) => {
     );
   };
 
-  const onSubmit = (data) => dispatch(register(data, navigateToHome));
+  const onSubmit = (data) => {
+    setIsSubmitting(true);
+    data.departmentId = selectedDepartment;
+    data.levelId = selectedLevel;
+    dispatch(register(data, navigateToHome));
+    setIsSubmitting(false);
+  };
 
   return (
     <View style={[Styles.container, globalStyles.background]}>
       <View style={Styles.header}>
         <Text style={[globalStyles.headingText]}>Hi FPIite!</Text>
-        <Text style={[globalStyles.normalText]}>Welcome Back</Text>
+        <Text style={[globalStyles.normalText]}>Getting Started</Text>
+      </View>
+      <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {isSubmitting ? <ActivityIndicator size={30} color="#ffffff" /> : null}
       </View>
       <Controller
         control={control}
@@ -94,19 +76,13 @@ const RegisterScreen = ({ navigation }) => {
         render={({ field: { onChange, onBlur, value } }) => (
           <View style={Styles.fieldStyle}>
             <Text style={Styles.inputLabel}>Username</Text>
-            <Input
-              style={Styles.fields}
-              onBlur={onBlur}
-              onChangeText={(text) => onChange(text)}
-              value={value}
-              placeholder="adeadam"
-            />
+            <Input placeholder="adeadam" onBlur={onBlur} onChangeText={onChange} value={value} />
           </View>
         )}
-        name="email"
+        name="username"
         defaultValue=""
       />
-      {errors.email && <Text style={Styles.errorStyle}>A valid email address is required.</Text>}
+      {errors.username && <Text style={Styles.errorStyle}>Username is required.</Text>}
       <Controller
         control={control}
         rules={{
@@ -129,22 +105,47 @@ const RegisterScreen = ({ navigation }) => {
         defaultValue=""
       />
       {errors.email && <Text style={Styles.errorStyle}>A valid email address is required.</Text>}
+      {/* <Controller
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field }) => ( */}
+      <View style={Styles.fieldStyle}>
+        <Text style={Styles.inputLabel}>Department</Text>
+        <Picker
+          selectedValue={selectedDepartment}
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedDepartment(itemValue);
+            console.log(itemValue);
+          }}
+          style={{ backgroundColor: '#ffffff', borderRadius: 4, color: '#999', fontSize: 12 }}
+        >
+          <Picker.Item label="Computer Science" value={1} />
+          <Picker.Item label="Electrical Engineering" value={2} />
+          <Picker.Item label="Surveying and Geo-informatics" value={3} />
+          <Picker.Item label="Office Technology Management" value={4} />
+        </Picker>
+      </View>
+      {/* )}
+        name="departmentId"
+        defaultValue=""
+      />
+      {errors.departmentId && <Text style={Styles.errorStyle}>Department is required.</Text>} */}
       <Controller
         control={control}
         rules={{
-          maxLength: 100,
           required: true,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <View style={Styles.fieldStyle}>
             <Text style={Styles.inputLabel}>Password</Text>
             <Input
-              style={Styles.fields}
+              secureTextEntry
+              placeholder="*******"
               onBlur={onBlur}
-              secureTextEntry={true}
               onChangeText={onChange}
               value={value}
-              placeholder="******"
             />
           </View>
         )}
@@ -152,53 +153,33 @@ const RegisterScreen = ({ navigation }) => {
         defaultValue=""
       />
       {errors.password && <Text style={Styles.errorStyle}>Password is required.</Text>}
-
-      <Controller
+      {/* <Controller
         control={control}
         rules={{
-          maxLength: 100,
           required: true,
         }}
-        render={({ value, onChange }) => (
-          <View style={Styles.fieldStyle}>
-            <Text style={Styles.inputLabel}>Department</Text>
-            <SearchableDropdown
-              onTextChange={(text) => setSelectedItem(text)}
-              // setSelectedItem={()}
-              selectedItem={value}
-              containerStyle={{ padding: 5 }}
-              textInputStyle={{
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                backgroundColor: '#FAF7F6',
-              }}
-              itemStyle={{
-                padding: 10,
-                marginTop: 2,
-                backgroundColor: '#FAF9F8',
-                borderColor: '#bbb',
-                borderWidth: 1,
-              }}
-              itemTextStyle={{
-                color: '#222',
-              }}
-              itemsContainerStyle={{
-                maxHeight: '40%',
-              }}
-              items={myDepartments}
-              defaultIndex={1}
-              placeholder="Select department"
-              resetValue={false}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-        )}
-        name="departments"
-        defaultValue="department"
-      />
-
-      {errors.departments && <Text style={Styles.errorStyle}>Department is required.</Text>}
+        render={({ field }) => ( */}
+      <View style={Styles.fieldStyle}>
+        <Text style={Styles.inputLabel}>Level</Text>
+        <Picker
+          selectedValue={selectedLevel}
+          name="levelId"
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedLevel(itemValue);
+          }}
+          style={{ backgroundColor: '#ffffff', borderRadius: 4, color: '#999', fontSize: 12 }}
+        >
+          <Picker.Item label="ND 1" value={1} />
+          <Picker.Item label="ND 2" value={2} />
+          <Picker.Item label="HND 1" value={3} />
+          <Picker.Item label="HND 2" value={4} />
+        </Picker>
+      </View>
+      {/* )}
+        name="levelId"
+        defaultValue=""
+      /> */}
+      {/* {errors.levelId && <Text style={Styles.errorStyle}>Level is required.</Text>} */}
       <View style={Styles.Buttons}>
         <Button onPress={handleSubmit(onSubmit)} appearance="filled" style={Styles.button}>
           <Text style={Styles.registerText}>Register</Text>
@@ -241,6 +222,7 @@ const Styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    fontFamily: 'arlon-medium',
     width: 280,
     marginBottom: 20,
   },

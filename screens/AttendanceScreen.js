@@ -1,30 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { StyleSheet, View } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleSheet, View, Vibration, Alert } from 'react-native';
 import { globalStyles } from '../shared/global';
 import { Text, Button } from '@ui-kitten/components';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { createAttendance } from '../actions/attendances/attendance';
+import { markAttendance } from '../actions/attendances/attendance';
+import { getUserData } from '../utils/storage';
+import moment from 'moment';
 
 const AttendanceScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [attendanceData, setAttendanceData] = useState({});
+  const user = useSelector((state) => state.login.user);
+  const [lastAttendanceDate, setLastAttendanceDate] = useState(null);
+  const [attendanceMarked, setAttendanceMarked] = useState(false)
+  const userData = useSelector((state) => state.login.user);
+  const dispatch = useDispatch();
+
+  useEffect(async () => {
+    let att = await getUserData('attendanceData');
+    const attendanceDay = moment(att.createdAt).format('DD');
+    const currentDay = moment(new Date()).format('DD');
+    // console.log(currentDay);
+    setLastAttendanceDate(attendanceDay);
+
+    if (attendanceDay === currentDay && userData.id === att.id) {
+      console.log(userData.id);
+      Alert.alert('You already marked the attendance for today');
+      navigation.navigate('DashboardScreen');
+    }
+    console.log(attendanceDay);
+  }, [lastAttendanceDate]);
 
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
-  }, []);
+  }, [scanned]);
+  let studentId = user.id;
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    if (scanned === true) setAttendanceData(data);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    setAttendanceData({ data: data });
+    if (attendanceData.data) {
+      console.log(attendanceData.data);
+      let objData = JSON.parse(attendanceData.data);
+      console.log(objData.lecturer);
+      const attend = {};
+      attend.lecturerId = objData.lecturerId;
+      attend.classId = objData.classId;
+      attend.studentId = studentId;
+      //Get last attendance from the asyncStorage
+
+      dispatch(markAttendance(attend));
+      console.log(attend);
+    }
+    Vibration.vibrate(200);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
-  console.log(attendanceData);
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
   }
@@ -49,13 +85,16 @@ const AttendanceScreen = ({ navigation }) => {
         </View>
 
         <View>
-          <Button onPress={() => setShowScanner(!showScanner)} style={Styles.buttonStyle}>
+          <Text style={{ color: '#18615B', textAlign: 'center' }}>
+            Scan QR Code to mark your attendance
+          </Text>
+          {/* <Button onPress={() => setShowScanner(!showScanner)} style={Styles.buttonStyle}>
             <Text style={[Styles.qrText, globalStyles.normalText]}>Scan QR Code</Text>
           </Button>
 
           <Button style={Styles.buttonStyle}>
             <Text style={Styles.qrText}>Cancel</Text>
-          </Button>
+          </Button> */}
         </View>
       </View>
     </View>

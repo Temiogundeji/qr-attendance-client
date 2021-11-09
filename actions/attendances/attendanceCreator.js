@@ -25,3 +25,25 @@ export const setAttendanceError = (error) => {
     payload: error,
   };
 };
+
+
+
+export const createAttendanceRequest = () => {
+  return {
+    type: attendanceConstants.CREATE_ATTENDANCE_REQUEST,
+  };
+};
+
+export const createAttendanceSuccess = (payload) => {
+  return {
+    type: attendanceConstants.CREATE_ATTENDANCE_SUCCESS,
+    payload,
+  };
+};
+
+export const createAttendanceFailed = (error) => {
+  return {
+    type: attendanceConstants.CREATE_ATTENDANCE_FAILED,
+    error,
+  };
+};

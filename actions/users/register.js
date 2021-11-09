@@ -4,7 +4,6 @@ import { setLoginSuccess, setLoginRequest, setLoginError } from './actionCreator
 import { storeUserData } from '../../utils/storage';
 
 export const register = (loginInput, callback = () => {}) => {
-  //   const { email, password } = loginInput;
   return (dispatch) => {
     dispatch(setLoginRequest());
     return fetch(userAPI.USER_REGISTER_ENDPOINT, {
@@ -25,8 +24,6 @@ export const register = (loginInput, callback = () => {}) => {
           dispatch(setLoginSuccess(data));
           Alert.alert('Registeration successful', message);
           callback();
-        } else {
-          Alert.alert('Error', 'Email or Password is incorrect');
         }
       })
       .catch((err) => {

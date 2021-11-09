@@ -28,7 +28,7 @@ export const globalStyles = {
     backgroundColor: '#ffffff',
   },
   background: {
-    backgroundColor: '#dc780b',
+    backgroundColor: '#18615B',
   },
   button: {
     width: '100%',
