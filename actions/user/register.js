@@ -6,7 +6,7 @@ import { storeUserData } from '../../utils/storage';
 export const register = (loginInput, callback = () => {}) => {
   //   const { email, password } = loginInput;
   return (dispatch) => {
-    dispatch(setLoginRequest());
+    dispatch(setRegisterRequest());
     return fetch(userAPI.USER_REGISTER_ENDPOINT, {
       method: 'POST',
       headers: {
