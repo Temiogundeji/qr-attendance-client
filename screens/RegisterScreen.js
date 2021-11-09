@@ -26,7 +26,7 @@ const RegisterScreen = ({ navigation }) => {
   // const [isFetchingDepartments, setIsFetchingDepartments] = useState(false);
   const [myDepartments, setMyDepartments] = useState({});
   const [selectedItem, setSelectedItem] = useState('');
-
+  const isLoading = useSelector((state) => state.register.isLoading);
   // const successCallback = (data) => {
   //   setDepartments(data);
   // };
@@ -86,6 +86,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={[globalStyles.headingText]}>Hi FPIite!</Text>
         <Text style={[globalStyles.normalText]}>Welcome Back</Text>
       </View>
+      {isLoading ? ActivityIndicator size={30} color="#ffffff" /> : null }
       <Controller
         control={control}
         rules={{
