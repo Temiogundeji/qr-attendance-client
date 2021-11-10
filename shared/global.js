@@ -38,6 +38,6 @@ export const globalStyles = {
   },
   secondaryBorder: {
     boderWidth: 2,
-    borderColor: '##dc780b',
+    borderColor: '#dc780b',
   },
 };
