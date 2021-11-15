@@ -3,21 +3,26 @@ import { useSelector } from 'react-redux';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Card, Avatar } from '@ui-kitten/components';
 import { globalStyles } from '../shared';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const ProfileScreen = ({ navigation }) => {
   const user = useSelector((state) => state.login.user);
 
-  const PROFILE_IMAGE = { uri: user.profilePics };
+  // const PROFILE_IMAGE = { uri: user.profilePics };
+  const PROFILE_IMAGE = {
+    uri: 'https://www.flaticon.com/free-icon/user_3237472',
+  };
 
   return (
     <View style={Styles.container}>
       <Card style={Styles.centered}>
-        <View>
-          <Image
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <FontAwesome5 name="user-circle" size={170} color="#ccc" />
+          {/* <Image
             style={Styles.avatar}
             source={PROFILE_IMAGE}
             style={{ height: 250, resizeMode: 'contain', margin: 5 }}
-          />
+          /> */}
         </View>
         <View style={Styles.profileCard}>
           <Text style={Styles.profileCardText}>{user.username}</Text>

@@ -28,6 +28,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "This app was built to make it easier for schools to manage their student's attendance with ease."
   }
 }
